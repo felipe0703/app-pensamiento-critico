@@ -2,23 +2,20 @@ import React, { useContext, useRef } from "react";
 import { FirebaseContext } from "../../firebase";
 
 const Challenge = ({ challenge }) => {
-  // availableRef para acceder al valor directamente
-  const availableRef = useRef(challenge.available);
+  // statusRef para acceder al valor directamente
+  const statusRef = useRef(challenge.status);
 
   //context de firebase para cambios en la BD
   const { firebase } = useContext(FirebaseContext);
 
-  const { id, nombre, descripcion, image, available } = challenge;
+  const { id, name, description, image, status } = challenge;
 
   //modificar el estado del desafio en firebase
-  const updateAvailibity = () => {
-    const available = availableRef.current.value === "true";
+  const updateStatus = () => {
+    const status = statusRef.current.value === "true";
 
     try {
-      firebase.db
-        .collection("challenges")
-        .doc(id)
-        .update({ available: available });
+      firebase.db.collection("challenges").doc(id).update({ status: status });
     } catch (error) {
       console.log(error);
     }
@@ -35,9 +32,9 @@ const Challenge = ({ challenge }) => {
                 <span className="block text-gray-800 mb-2">Visualización:</span>
                 <select
                   className="bg-white shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
-                  value={available}
-                  ref={availableRef}
-                  onChange={() => updateAvailibity()}
+                  value={status}
+                  ref={statusRef}
+                  onChange={() => updateStatus()}
                 >
                   <option value="true">Activo</option>
                   <option value="false">Inactivo</option>
@@ -47,9 +44,9 @@ const Challenge = ({ challenge }) => {
           </div>
           <div className="lg:w-7/12 xl:w-9/12 pl-5">
             <p className="font-bold text-2xl text-yellow-600 mb-4">
-              {nombre.toUpperCase()}
+              {name.toUpperCase()}
             </p>
-            <p className="text-gray-600 mb-4">{descripcion}</p>
+            <p className="text-gray-600 mb-4">{description}</p>
           </div>
         </div>
       </div>

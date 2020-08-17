@@ -1,43 +1,149 @@
 import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
+import FileUploader from "react-firebase-file-uploader";
 import * as Yup from "yup";
 import { FirebaseContext } from "../../firebase";
-import { useNavigate } from "react-router-dom";
-import FileUploader from "react-firebase-file-uploader";
 
 const NewChallenge = () => {
   // state para las imagenes
   const [upload, setUpload] = useState(false);
   const [progress, setProgress] = useState(0);
   const [urlImage, setUrlImage] = useState("");
+
   //Context con las operaciones de firebase
   const { firebase } = useContext(FirebaseContext);
 
   //Hook para redireccionar
   const navigate = useNavigate();
 
+  const formatChallenge = (datos) => {
+    return {
+      order: 0,
+      name: datos.name,
+      image: urlImage,
+      description: datos.description,
+      status: false,
+      created: "",
+      updated: "",
+      approach: datos.approach,
+      thesis1: {
+        text: datos.thesis1,
+        arguments: [
+          datos.arguments1_1,
+          datos.arguments1_2,
+          datos.arguments1_3,
+          datos.arguments1_4,
+        ],
+        conclusion: "",
+      },
+      thesis2: {
+        text: datos.thesis2,
+        arguments: [
+          datos.arguments2_1,
+          datos.arguments2_2,
+          datos.arguments2_3,
+          datos.arguments2_4,
+        ],
+        conclusion: "",
+      },
+    };
+  };
+
   //validacion y leer los datos del formulario
   const formik = useFormik({
     initialValues: {
-      nombre: "",
-      descripcion: "",
+      name: "",
+      description: "",
       image: "",
+      approach: "",
+      thesis1: "",
+      thesis2: "",
+      arguments1_1: "",
+      arguments1_2: "",
+      arguments1_3: "",
+      arguments1_4: "",
+      arguments2_1: "",
+      arguments2_2: "",
+      arguments2_3: "",
+      arguments2_4: "",
     },
     validationSchema: Yup.object({
-      nombre: Yup.string()
+      name: Yup.string()
         .min(3, "El nombre del desadío debe tener como mínimo 3 caracteres")
         .required("El nombre del desafío es obligatorio"),
-      descripcion: Yup.string()
+      description: Yup.string()
         .min(
           10,
           "La descripción del desadío debe tener como mínimo 10 caracteres"
         )
         .required("La descripción del desafío es obligatoria"),
+      approach: Yup.string()
+        .min(
+          10,
+          "El planteamiento del desadío debe tener como mínimo 10 caracteres"
+        )
+        .required("El planteamiento del desafío es obligatorio"),
+      thesis1: Yup.string()
+        .min(10, "La tesis del desadío debe tener como mínimo 10 caracteres")
+        .required("La tesis del desafío es obligatorio"),
+      thesis2: Yup.string()
+        .min(10, "La tesis del desadío debe tener como mínimo 10 caracteres")
+        .required("La tesis del desafío es obligatorio"),
+      arguments1_1: Yup.string()
+        .min(
+          10,
+          "El argumento del desadío debe tener como mínimo 10 caracteres"
+        )
+        .required("El argumento del desafío es obligatorio"),
+      arguments1_2: Yup.string()
+        .min(
+          10,
+          "El argumento del desadío debe tener como mínimo 10 caracteres"
+        )
+        .required("El argumento del desafío es obligatorio"),
+      arguments1_3: Yup.string()
+        .min(
+          10,
+          "El argumento del desadío debe tener como mínimo 10 caracteres"
+        )
+        .required("El argumento del desafío es obligatorio"),
+      arguments1_4: Yup.string()
+        .min(
+          10,
+          "El argumento del desadío debe tener como mínimo 10 caracteres"
+        )
+        .required("El argumento del desafío es obligatorio"),
+      arguments2_1: Yup.string()
+        .min(
+          10,
+          "El argumento del desadío debe tener como mínimo 10 caracteres"
+        )
+        .required("El argumento del desafío es obligatorio"),
+      arguments2_2: Yup.string()
+        .min(
+          10,
+          "El argumento del desadío debe tener como mínimo 10 caracteres"
+        )
+        .required("El argumento del desafío es obligatorio"),
+      arguments2_3: Yup.string()
+        .min(
+          10,
+          "El argumento del desadío debe tener como mínimo 10 caracteres"
+        )
+        .required("El argumento del desafío es obligatorio"),
+      arguments2_4: Yup.string()
+        .min(
+          10,
+          "El argumento del desadío debe tener como mínimo 10 caracteres"
+        )
+        .required("El argumento del desafío es obligatorio"),
     }),
-    onSubmit: (challenge) => {
+    onSubmit: (datos) => {
       try {
-        challenge.available = true;
-        challenge.image = urlImage;
+        const challenge = formatChallenge(datos);
+        // challenge.status = false;
+        // challenge.image = urlImage;
         firebase.db.collection("challenges").add(challenge);
         //redireccionar
         navigate("/portada");
@@ -55,7 +161,6 @@ const NewChallenge = () => {
 
   const handleUploadError = (error) => {
     setUpload(false);
-    console.log(error);
   };
 
   const handleUploadSuccess = async (name) => {
@@ -67,13 +172,11 @@ const NewChallenge = () => {
       .ref("challenges")
       .child(name)
       .getDownloadURL();
-    console.log(url);
     setUrlImage(url);
   };
 
   const handleProgress = (pro) => {
     setProgress(pro);
-    console.log(pro);
   };
 
   return (
@@ -91,27 +194,27 @@ const NewChallenge = () => {
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="nombre"
+                htmlFor="name"
               >
                 Nombre
               </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="nombre"
+                id="name"
                 type="text"
                 placeholder="Nombre desafío"
-                value={formik.values.nombre}
+                value={formik.values.name}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
             </div>
-            {formik.touched.nombre && formik.errors.nombre ? (
+            {formik.touched.name && formik.errors.name ? (
               <div
                 className="bg-red-100 border-l-4 border border-red-500 text-red-700 p-4 mb-5"
                 role="alert"
               >
                 <p className="font-bold">Hubo un error:</p>
-                <p>{formik.errors.nombre}</p>
+                <p>{formik.errors.name}</p>
               </div>
             ) : null}
 
@@ -153,26 +256,26 @@ const NewChallenge = () => {
             <div className="mb-6">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="descripcion"
+                htmlFor="description"
               >
                 Descripción
               </label>
               <textarea
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-20"
-                id="descripcion"
+                id="description"
                 placeholder="Descripción desafío"
-                value={formik.values.descripcion}
+                value={formik.values.description}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               ></textarea>
             </div>
-            {formik.touched.descripcion && formik.errors.descripcion ? (
+            {formik.touched.description && formik.errors.description ? (
               <div
                 className="bg-red-100 border-l-4 border border-red-500 text-red-700 p-4 mb-5"
                 role="alert"
               >
                 <p className="font-bold">Hubo un error:</p>
-                <p>{formik.errors.descripcion}</p>
+                <p>{formik.errors.description}</p>
               </div>
             ) : null}
 
@@ -185,53 +288,81 @@ const NewChallenge = () => {
             <div className="mb-4 ">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="planteamiento"
+                htmlFor="approach"
               >
                 Planteamiento
               </label>
               <textarea
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-40"
-                id="planteamiento"
+                id="approach"
                 placeholder="Descripción el planteamiento de la tesis"
-                value={formik.values.descripcion}
+                value={formik.values.approach}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               ></textarea>
             </div>
+            {formik.touched.approach && formik.errors.approach ? (
+              <div
+                className="bg-red-100 border-l-4 border border-red-500 text-red-700 p-4 mb-5"
+                role="alert"
+              >
+                <p className="font-bold">Hubo un error:</p>
+                <p>{formik.errors.approach}</p>
+              </div>
+            ) : null}
 
             <div className="mb-4 mt-4 ">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="descripcion"
+                htmlFor="thesis1"
               >
                 Tesis 1
               </label>
               <textarea
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-20"
-                id="descripcion"
+                id="thesis1"
                 placeholder="Descripción el planteamiento de la tesis"
-                value={formik.values.descripcion}
+                value={formik.values.thesis1}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               ></textarea>
             </div>
+            {formik.touched.thesis1 && formik.errors.thesis1 ? (
+              <div
+                className="bg-red-100 border-l-4 border border-red-500 text-red-700 p-4 mb-5"
+                role="alert"
+              >
+                <p className="font-bold">Hubo un error:</p>
+                <p>{formik.errors.thesis1}</p>
+              </div>
+            ) : null}
 
             <div className="mb-4 mt-4 ">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="descripcion"
+                htmlFor="thesis2"
               >
                 Tesis 2
               </label>
               <textarea
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-20"
-                id="descripcion"
+                id="thesis2"
                 placeholder="Descripción el planteamiento de la tesis"
-                value={formik.values.descripcion}
+                value={formik.values.thesis2}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               ></textarea>
             </div>
+
+            {formik.touched.thesis2 && formik.errors.thesis2 ? (
+              <div
+                className="bg-red-100 border-l-4 border border-red-500 text-red-700 p-4 mb-5"
+                role="alert"
+              >
+                <p className="font-bold">Hubo un error:</p>
+                <p>{formik.errors.thesis2}</p>
+              </div>
+            ) : null}
 
             <div className="my-10">
               <p className="font-bold text-xl text-gray-700 text-center">
@@ -242,67 +373,108 @@ const NewChallenge = () => {
             <div className="mb-4 mt-4 ">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="argumento1_1"
+                htmlFor="arguments1_1"
               >
                 Argumento a favor de la Tesis 1
               </label>
               <textarea
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-20"
-                id="argumento1_1"
+                id="arguments1_1"
                 placeholder="Argumento a favor de la tesis 1"
-                value={formik.values.descripcion}
+                value={formik.values.arguments1_1}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               ></textarea>
             </div>
+            {formik.touched.arguments1_1 && formik.errors.arguments1_1 ? (
+              <div
+                className="bg-red-100 border-l-4 border border-red-500 text-red-700 p-4 mb-5"
+                role="alert"
+              >
+                <p className="font-bold">Hubo un error:</p>
+                <p>{formik.errors.arguments1_1}</p>
+              </div>
+            ) : null}
+
             <div className="mb-4 mt-4 ">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="argumento1_1"
+                htmlFor="arguments1_2"
               >
                 Argumento a favor de la Tesis 1
               </label>
               <textarea
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-20"
-                id="argumento1_1"
+                id="arguments1_2"
                 placeholder="Argumento a favor de la tesis 1"
-                value={formik.values.descripcion}
+                value={formik.values.arguments1_2}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               ></textarea>
             </div>
+
+            {formik.touched.arguments1_2 && formik.errors.arguments1_2 ? (
+              <div
+                className="bg-red-100 border-l-4 border border-red-500 text-red-700 p-4 mb-5"
+                role="alert"
+              >
+                <p className="font-bold">Hubo un error:</p>
+                <p>{formik.errors.arguments1_2}</p>
+              </div>
+            ) : null}
+
             <div className="mb-4 mt-4 ">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="argumento1_1"
+                htmlFor="arguments1_3"
               >
                 Argumento a favor de la Tesis 1
               </label>
               <textarea
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-20"
-                id="argumento1_1"
+                id="arguments1_3"
                 placeholder="Argumento a favor de la tesis 1"
-                value={formik.values.descripcion}
+                value={formik.values.arguments1_3}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               ></textarea>
             </div>
+            {formik.touched.arguments1_3 && formik.errors.arguments1_3 ? (
+              <div
+                className="bg-red-100 border-l-4 border border-red-500 text-red-700 p-4 mb-5"
+                role="alert"
+              >
+                <p className="font-bold">Hubo un error:</p>
+                <p>{formik.errors.arguments1_3}</p>
+              </div>
+            ) : null}
+
             <div className="mb-4 mt-4 ">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="argumento1_1"
+                htmlFor="arguments1_4"
               >
                 Argumento a favor de la Tesis 1
               </label>
               <textarea
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-20"
-                id="argumento1_1"
+                id="arguments1_4"
                 placeholder="Argumento a favor de la tesis 1"
-                value={formik.values.descripcion}
+                value={formik.values.arguments1_4}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               ></textarea>
             </div>
+            {formik.touched.arguments1_4 && formik.errors.arguments1_4 ? (
+              <div
+                className="bg-red-100 border-l-4 border border-red-500 text-red-700 p-4 mb-5"
+                role="alert"
+              >
+                <p className="font-bold">Hubo un error:</p>
+                <p>{formik.errors.arguments1_4}</p>
+              </div>
+            ) : null}
+
             <div className="my-10">
               <p className="font-bold text-xl text-gray-700 text-center">
                 Argumentos Tesis 2
@@ -311,67 +483,104 @@ const NewChallenge = () => {
             <div className="mb-4 mt-4 ">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="argumento2_1"
+                htmlFor="arguments2_1"
               >
                 Argumento a favor de la Tesis 2
               </label>
               <textarea
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-20"
-                id="argumento2_1"
+                id="arguments2_1"
                 placeholder="Argumento a favor de la tesis 2"
-                value={formik.values.descripcion}
+                value={formik.values.arguments2_1}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               ></textarea>
             </div>
+
+            {formik.touched.arguments2_1 && formik.errors.arguments2_1 ? (
+              <div
+                className="bg-red-100 border-l-4 border border-red-500 text-red-700 p-4 mb-5"
+                role="alert"
+              >
+                <p className="font-bold">Hubo un error:</p>
+                <p>{formik.errors.arguments2_1}</p>
+              </div>
+            ) : null}
             <div className="mb-4 mt-4 ">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="argumento2_1"
+                htmlFor="arguments2_2"
               >
                 Argumento a favor de la Tesis 2
               </label>
               <textarea
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-20"
-                id="argumento2_1"
+                id="arguments2_2"
                 placeholder="Argumento a favor de la tesis 2"
-                value={formik.values.descripcion}
+                value={formik.values.arguments2_2}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               ></textarea>
             </div>
+            {formik.touched.arguments2_2 && formik.errors.arguments2_2 ? (
+              <div
+                className="bg-red-100 border-l-4 border border-red-500 text-red-700 p-4 mb-5"
+                role="alert"
+              >
+                <p className="font-bold">Hubo un error:</p>
+                <p>{formik.errors.arguments2_2}</p>
+              </div>
+            ) : null}
             <div className="mb-4 mt-4 ">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="argumento2_1"
+                htmlFor="arguments2_3"
               >
                 Argumento a favor de la Tesis 2
               </label>
               <textarea
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-20"
-                id="argumento2_1"
+                id="arguments2_3"
                 placeholder="Argumento a favor de la tesis 2"
-                value={formik.values.descripcion}
+                value={formik.values.arguments2_3}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               ></textarea>
             </div>
+            {formik.touched.arguments2_3 && formik.errors.arguments2_3 ? (
+              <div
+                className="bg-red-100 border-l-4 border border-red-500 text-red-700 p-4 mb-5"
+                role="alert"
+              >
+                <p className="font-bold">Hubo un error:</p>
+                <p>{formik.errors.arguments2_3}</p>
+              </div>
+            ) : null}
             <div className="mb-4 mt-4 ">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="argumento2_1"
+                htmlFor="arguments2_4"
               >
                 Argumento a favor de la Tesis 2
               </label>
               <textarea
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-20"
-                id="argumento2_1"
+                id="arguments2_4"
                 placeholder="Argumento a favor de la tesis 2"
-                value={formik.values.descripcion}
+                value={formik.values.arguments2_4}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               ></textarea>
             </div>
+            {formik.touched.arguments2_4 && formik.errors.arguments2_4 ? (
+              <div
+                className="bg-red-100 border-l-4 border border-red-500 text-red-700 p-4 mb-5"
+                role="alert"
+              >
+                <p className="font-bold">Hubo un error:</p>
+                <p>{formik.errors.arguments2_4}</p>
+              </div>
+            ) : null}
 
             <input
               type="submit"
