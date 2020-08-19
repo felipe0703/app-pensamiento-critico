@@ -26,7 +26,7 @@ const ChallengeScreenForm = ({ challenge }) => {
     return {
       order: 0,
       name: datos.name,
-      image: urlImage,
+      image: urlImage ? urlImage : image ? image : "",
       description: datos.description,
       status: false,
       created: "",
