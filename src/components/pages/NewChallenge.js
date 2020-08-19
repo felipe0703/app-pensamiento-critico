@@ -142,11 +142,9 @@ const NewChallenge = () => {
     onSubmit: (datos) => {
       try {
         const challenge = formatChallenge(datos);
-        // challenge.status = false;
-        // challenge.image = urlImage;
         firebase.db.collection("challenges").add(challenge);
         //redireccionar
-        navigate("/portada");
+        navigate("/desafios");
       } catch (error) {
         console.log(error);
       }

@@ -1,12 +1,15 @@
 //dependencias
 import React from "react";
 import { Routes, Route } from "react-router";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import firebase, { FirebaseContext } from "./firebase";
 
 //componentes
 import Challenges from "./components/pages/Challenges";
 import NewChallenge from "./components/pages/NewChallenge";
+import ChallengeScreen from "./components/pages/ChallengeScreen";
 import Sidebar from "./components/ui/Sidebar";
 
 function App() {
@@ -20,11 +23,17 @@ function App() {
         <Sidebar />
         <div className="md:w-3/5 xl:w-4/5 p-6 bg-gray-200">
           <Routes>
-            <Route path="/desafios" element={<Challenges />} />
-            <Route path="/nuevo-desafio" element={<NewChallenge />} />
+            <Route exact path="/desafios" element={<Challenges />} />
+            <Route exact path="/nuevo-desafio" element={<NewChallenge />} />
+            <Route
+              exact
+              path="/desafios/:challengeId"
+              element={<ChallengeScreen />}
+            />
           </Routes>
         </div>
       </div>
+      <ToastContainer />
     </FirebaseContext.Provider>
   );
 }

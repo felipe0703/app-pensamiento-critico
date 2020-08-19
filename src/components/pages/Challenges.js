@@ -37,10 +37,11 @@ const Portada = () => {
       >
         Agregar Desafío
       </Link>
-
-      {challenges.map((challenge) => (
-        <Challenge key={challenge.id} challenge={challenge} />
-      ))}
+      <div className=" flex flex-col lg:flex-row flex-wrap">
+        {challenges.map((challenge) => (
+          <Challenge key={challenge.id} challenge={challenge} />
+        ))}
+      </div>
     </>
   );
 };
