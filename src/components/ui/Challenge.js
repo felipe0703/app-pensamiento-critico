@@ -1,26 +1,26 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { FirebaseContext } from "../../firebase";
 import { toast } from "react-toastify";
 
 const Challenge = ({ challenge }) => {
   // statusRef para acceder al valor directamente
-  const statusRef = useRef(challenge.status);
+  // const statusRef = useRef(challenge.status);
   //context de firebase para cambios en la BD
   const { firebase } = useContext(FirebaseContext);
 
-  const { id, name, description, image, status } = challenge;
+  const { id, name, description, image } = challenge;
 
   //modificar el estado del desafio en firebase
-  const updateStatus = () => {
-    const status = statusRef.current.value === "true";
+  // const updateStatus = () => {
+  //   const status = statusRef.current.value === "true";
 
-    try {
-      firebase.db.collection("challenges").doc(id).update({ status: status });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //   try {
+  //     firebase.db.collection("challenges").doc(id).update({ status: status });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const handleDelete = async (id) => {
     if (window.confirm("¿Está seguro de eliminar este desafío?")) {

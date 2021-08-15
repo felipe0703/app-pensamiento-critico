@@ -21,7 +21,7 @@ const ChallengeScreen = () => {
         });
     };
     getChallenge();
-  }, [challengeId]);
+  }, [challengeId, firebase.db]);
 
   return (
     <div>

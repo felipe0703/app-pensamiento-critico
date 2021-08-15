@@ -11,6 +11,7 @@ import Challenges from "./components/pages/Challenges";
 import NewChallenge from "./components/pages/NewChallenge";
 import ChallengeScreen from "./components/pages/ChallengeScreen";
 import Sidebar from "./components/ui/Sidebar";
+import { Dashboard } from "./components/pages/Dashboard";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
               path="/desafios/:challengeId"
               element={<ChallengeScreen />}
             />
+            <Route exact path="/dashboard" element={<Dashboard />} />
           </Routes>
         </div>
       </div>

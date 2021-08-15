@@ -14,7 +14,7 @@ const Portada = () => {
       firebase.db.collection("challenges").onSnapshot(handleSnapshot);
     };
     getChallenges();
-  }, []);
+  }, [firebase.db]);
 
   //Snapshot nos permite utilizar la base de datos en tiempo real de firestore
   function handleSnapshot(snapshot) {
@@ -29,7 +29,7 @@ const Portada = () => {
   }
 
   return (
-    <>
+    <main>
       <h1 className="text-3xl font-bold text-gray-600 mb-4">Desafíos</h1>
       <Link
         to="/nuevo-desafio"
@@ -42,7 +42,7 @@ const Portada = () => {
           <Challenge key={challenge.id} challenge={challenge} />
         ))}
       </div>
-    </>
+    </main>
   );
 };
 
