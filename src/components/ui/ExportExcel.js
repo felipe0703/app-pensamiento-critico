@@ -32,16 +32,21 @@ export default function ExportExcel({
         if (chall.email === user) {
           temp.push(chall);
         }
+        return temp;
       });
+
       data.push(temp);
 
       mergeChallenge2.map((chall) => {
         if (chall.email === user) {
           temp2.push(chall);
         }
+        return temp2;
       });
       data2.push(temp2);
+      return data;
     });
+
     setDataUsers(data);
     setDataUsers2(data2);
   }, [users, mergeChallenge1, mergeChallenge2]);
@@ -116,6 +121,7 @@ export default function ExportExcel({
       };
 
       data.push(temp);
+      return data;
     });
     setChallenge1(data);
   }, [dataUsers]);
@@ -176,6 +182,7 @@ export default function ExportExcel({
       };
 
       data.push(temp);
+      return data;
     });
     setChallenge2(data);
   }, [dataUsers2]);

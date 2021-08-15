@@ -1,4 +1,3 @@
-import { useFormikContext } from "formik";
 import React, { useEffect, useState } from "react";
 import ReactExport from "react-export-excel";
 import { questions } from "../Questions";
@@ -15,13 +14,13 @@ export default function ExportExcel({
   users,
 }) {
   const [dataUsers, setDataUsers] = useState([]);
-  const [dataUsersIntro, setDataUsersIntro] = useState([]);
+  // const [dataUsersIntro, setDataUsersIntro] = useState([]);
   const [dataUsers2, setDataUsers2] = useState([]);
   const [challenge1, setChallenge1] = useState([]);
   const [challenge2, setChallenge2] = useState([]);
   const [newTrivia, setNewTrivia] = useState([]);
 
-  console.log(dataUsersIntro);
+  // console.log(dataUsersIntro);
 
   // SEPARO LOS DATOS DE LOS USUARIOS
   useEffect(() => {
@@ -37,6 +36,7 @@ export default function ExportExcel({
         if (chall.email === user) {
           temp.push(chall);
         }
+        return temp;
       });
       data.push(temp);
 
@@ -44,6 +44,7 @@ export default function ExportExcel({
         if (chall.email === user) {
           temp2.push(chall);
         }
+        return temp2;
       });
       data2.push(temp2);
 
@@ -51,13 +52,15 @@ export default function ExportExcel({
         if (chall.email === user) {
           temp3.push(chall);
         }
+        return temp3;
       });
       data3.push(temp3);
+      return data;
     });
     setDataUsers(data2);
     setDataUsers2(data3);
-    setDataUsersIntro(data);
-  }, [users, mergeChallenge1, mergeChallenge2]);
+    // setDataUsersIntro(data);
+  }, [users, mergeChallenge1, mergeChallenge2, mergeIntro]);
 
   useEffect(() => {
     let data = [];
@@ -93,6 +96,7 @@ export default function ExportExcel({
         }
         data.push(temp);
       }
+      return data;
     });
     setNewTrivia(data);
   }, [mergeTrivia]);
@@ -102,12 +106,12 @@ export default function ExportExcel({
   useEffect(() => {
     let data = [];
     dataUsers.map((user) => {
-      const thesis = user.filter(
-        (ele) => ele.context === "Tesis" || ele.context === "tesis"
-      );
-      const all_arguments = user.filter(
-        (ele) => ele.context === "Argumentos" || ele.context === "argumentos"
-      );
+      // const thesis = user.filter(
+      //   (ele) => ele.context === "Tesis" || ele.context === "tesis"
+      // );
+      // const all_arguments = user.filter(
+      //   (ele) => ele.context === "Argumentos" || ele.context === "argumentos"
+      // );
 
       const temp = {
         idUser: user[0] ? user[0].idUser : "",
@@ -116,10 +120,11 @@ export default function ExportExcel({
       };
 
       data.push(temp);
+      return data;
     });
-    console.log(data);
+    // console.log(data);
     // setChallenge1(data);
-  }, [mergeIntro]);
+  }, [mergeIntro, dataUsers]);
 
   // DESAFÍO 1
   useEffect(() => {
@@ -192,6 +197,7 @@ export default function ExportExcel({
       };
 
       data.push(temp);
+      return data;
     });
     setChallenge1(data);
   }, [dataUsers]);
@@ -250,6 +256,7 @@ export default function ExportExcel({
       };
 
       data.push(temp);
+      return data;
     });
     setChallenge2(data);
   }, [dataUsers2]);
